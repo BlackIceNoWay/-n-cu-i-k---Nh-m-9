@@ -5,8 +5,6 @@ class Backtrack:
         self.paths = []
         self.answer = [] 
     def tsp(self, locations, v, currPos, starPos, n, count, cost, paths):
-        # Fix the typo in the comment: "visited" instead of "visted"
-        # v: visited, n: number of locations
         if count == n and locations[currPos][starPos]:
             self.answer.append(cost + locations[currPos][starPos])
             self.paths.append(paths + [starPos]) 
@@ -32,8 +30,6 @@ class BackTrackUp:
         self.answer = []
 
     def tspu(self, locations, v, currPos, starPos, n, count, cost, paths, lower_bound):
-        # Fix the typo in the comment: "visited" instead of "visted"
-        # v: visited, n: number of locations
         if count == n and locations[currPos][starPos]:
             self.answer.append(cost + locations[currPos][starPos])
             self.paths.append(paths + [starPos]) 
@@ -51,7 +47,7 @@ class BackTrackUp:
                         v[i] = False # Cái này mang ý nghĩa là return
 
     def calculate_lower_bound(self, locations, v, currPos, n):
-        # Calculate the lower bound using the nearest neighbor heuristic
+        # Calculate the lower bound using the nearest neighbor 
         unvisited = [i for i in range(n) if not v[i]]
         min_distance = float('inf')
         for i in unvisited:
