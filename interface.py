@@ -20,10 +20,10 @@ y_coordinates = [0, 0, 6, 3]
 
 # Define distances between cities
 locations = [
-    [0, 10, 15, 20],
-    [10, 0, 35, 25],
-    [15, 35, 0, 30],
-    [20, 25, 30, 0]
+    [0, 1, 0, 0],
+    [1, 0, 5, 2],
+    [0, 5, 0, 3],
+    [0, 2, 3, 0]
 ]
 num_locations = len(locations)
 # Create the TSP solver instances
@@ -40,20 +40,25 @@ def solbut():
     start_time1 = time.perf_counter()
     tracemalloc.start()
     solver.tsp(locations, v, start, start, num_locations, 1, 0, [start])
-    min_dist = min(solver.answer)
-    for i, dist in enumerate(solver.answer):
-        if dist == min_dist:
-            best_paths = solver.paths[i]
-            best_path_cities_name = [citis_name[j] for j in best_paths]
-            best_dist = min_dist
-    end_time1 = time.perf_counter()
-    time_solve1 = (end_time1 - start_time1) * 10**3
-    memory1 = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
+    if not solver.answer:
+        result_label1.config(text="No valid path found")
+        plot_graph([])
+        update_table([], [], start)
+    else:
+        min_dist = min(solver.answer)
+        for i, dist in enumerate(solver.answer):
+            if dist == min_dist:
+                best_paths = solver.paths[i]
+                best_path_cities_name = [citis_name[j] for j in best_paths]
+                best_dist = min_dist
+        end_time1 = time.perf_counter()
+        time_solve1 = (end_time1 - start_time1) * 10**3
+        memory1 = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
 
-    result_label1.config(text=f"Best path (BackTrack): {best_path_cities_name}\nBest distance: {best_dist:.2f}\nTime: {time_solve1:.2f}ms\nMemory: {memory1[1] / 1024:.2f}KB")
-    plot_graph(best_paths, canvas1, ax1, "BackTrack Algorithm")
-    update_table(solver.paths, solver.answer, start)
+        result_label1.config(text=f"Best path (BackTrack): {best_path_cities_name}\nBest distance: {best_dist:.2f}\nTime: {time_solve1:.2f}ms\nMemory: {memory1[1] / 1024:.2f}KB")
+        plot_graph(best_paths, canvas1, ax1, "BackTrack Algorithm")
+        update_table(solver.paths, solver.answer, start)
 
     # Solve using BackTrackUp
     solverU.reset()  # Reset the solver
@@ -156,11 +161,17 @@ def plot_graph(path, canvas, ax, title):
             x_end = x_coordinates[j]
             y_end = y_coordinates[j]
             distance = locations[i][j]
-            ax.plot([x_start, x_end], [y_start, y_end], 'k--', alpha=0.2)
-            ax.text((x_start + x_end) / 2, (y_start + y_end) / 2, f"{distance:.2f}", ha='center', va='center')
-            if j == num_locations - 1:
-                ax.text(x_end, y_end, citis_name[j], ha='left', va='bottom')
-            ax.text(x_coordinates[i], y_coordinates[i], citis_name[i], ha='right', va='top')
+            place_names = citis_name
+            if locations[i][j] ==0:
+                ax.text(x_coordinates[i], y_coordinates[i], place_names[i], ha='right', va='top')
+
+                continue
+            if distance < float('inf'):  # Only plot if there is a path
+                ax.plot([x_start, x_end], [y_start, y_end], 'k--', alpha=0.2)
+                ax.text((x_start + x_end) / 2, (y_start + y_end) / 2, f"{distance:.2f}", ha='center', va='center')
+                if j == num_locations - 1:
+                    ax.text(x_end, y_end, citis_name[j], ha='left', va='bottom')
+                ax.text(x_coordinates[i], y_coordinates[i], citis_name[i], ha='right', va='top')
 
     # Highlight the starting point in green
     if path:
