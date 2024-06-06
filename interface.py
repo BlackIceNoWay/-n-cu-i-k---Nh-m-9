@@ -15,7 +15,6 @@ root.title("TSP Solver")
 
 # Define city names and coordinates
 citis_name = ["Hà Nội", "HCM", "Hải Phòng", "Đà Nẵng"]
-num_locations = len(citis_name)
 x_coordinates = [0, 6, 3, 3]
 y_coordinates = [0, 0, 6, 3]
 
@@ -26,7 +25,7 @@ locations = [
     [15, 35, 0, 30],
     [20, 25, 30, 0]
 ]
-
+num_locations = len(locations)
 # Create the TSP solver instances
 solver = Backtrack(locations)
 solverU = BackTrackUp(locations)
